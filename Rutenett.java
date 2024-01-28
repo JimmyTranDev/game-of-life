@@ -24,10 +24,10 @@ public class Rutenett {
     rutene[rad][kolonne] = celle;
   }
 
-  private void fyllRadMedTilfeldigeCeller(int rad) {
+  public void tegnRutenett() {
     IntStream
-        .range(0, antKolonner)
-        .forEach(kolonne -> this.settCelle(rad, kolonne));
+        .range(0, antRader)
+        .forEach(rad -> this.tegnRad(rad));
   }
 
   public void fyllMedTilfeldigeCeller() {
@@ -44,17 +44,45 @@ public class Rutenett {
     }
   }
 
+  public void settNaboer(int rad, int kolonne) {
+    Celle celle = this.hentCelle(rad, kolonne).orElse(null);
+
+    if (celle == null) {
+      return;
+    }
+
+    int[][] naboPosisjoner = this.faAlleNaboCellePosisjoner(rad, kolonne);
+    Celle[] naboer = this.hentCeller(naboPosisjoner);
+    Arrays.asList(naboer).forEach(celle::leggTilNabo);
+  }
+
+  public int antallLevende() {
+    Celle[] celler = hentAlleCeller();
+    return Arrays.asList(celler)
+        .stream()
+        .filter(celle -> celle.erLevende())
+        .toArray(Celle[]::new).length;
+  }
+
+  public void oppdater() {
+    Celle[] celler = hentAlleCeller();
+    Arrays.asList(celler).forEach(celle -> celle.tellLevendeNaboer());
+    Arrays.asList(celler).forEach(celle -> celle.oppdaterStatus());
+  }
+
+  ///////////////////////////////////////////////////////////////////////////
+
+  private void fyllRadMedTilfeldigeCeller(int rad) {
+    IntStream
+        .range(0, antKolonner)
+        .forEach(kolonne -> this.settCelle(rad, kolonne));
+  }
+
   private void tegnRad(int rad) {
     Arrays.asList(rutene[rad])
         .stream()
         .map(celle -> celle.hentStatusTegn())
         .forEach(tegn -> System.out.print(tegn));
-  }
-
-  public void tegnRutenett() {
-    IntStream
-        .range(0, antRader)
-        .forEach(rad -> this.tegnRad(rad));
   }
 
   private int[][] hentAllePar(int[] a, int[] b) {
@@ -110,18 +138,6 @@ public class Rutenett {
         .toArray(Celle[]::new);
   }
 
-  public void settNaboer(int rad, int kolonne) {
-    Celle celle = this.hentCelle(rad, kolonne).orElse(null);
-
-    if (celle == null) {
-      return;
-    }
-
-    int[][] naboPosisjoner = this.faAlleNaboCellePosisjoner(rad, kolonne);
-    Celle[] naboer = this.hentCeller(naboPosisjoner);
-    Arrays.asList(naboer).forEach(celle::leggTilNabo);
-  }
-
   public void kobleAlleCeller() {
     for (int rad = 0; rad < antRader; rad++) {
       for (int kolonne = 0; kolonne < antKolonner; kolonne++) {
@@ -136,13 +152,5 @@ public class Rutenett {
         .flatMap(Arrays::stream)
         .toArray(Celle[]::new);
 
-  }
-
-  public int antallLevende() {
-    Celle[] celler = hentAlleCeller();
-    return Arrays.asList(celler)
-        .stream()
-        .filter(celle -> celle.erLevende())
-        .toArray(Celle[]::new).length;
   }
 }
