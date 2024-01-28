@@ -1,5 +1,4 @@
 import java.util.Arrays;
-import java.util.Optional;
 import java.util.stream.IntStream;
 
 public class Rutenett {
@@ -27,13 +26,13 @@ public class Rutenett {
   public void tegnRutenett() {
     IntStream
         .range(0, antRader)
-        .forEach(rad -> this.tegnRad(rad));
+        .forEach(this::tegnRad);
   }
 
   public void fyllMedTilfeldigeCeller() {
     IntStream
         .range(0, antRader)
-        .forEach(rad -> this.fyllRadMedTilfeldigeCeller(rad));
+        .forEach(this::fyllRadMedTilfeldigeCeller);
   }
 
   public Celle hentCelle(int rad, int kolonne) {
@@ -57,17 +56,24 @@ public class Rutenett {
   }
 
   public int antallLevende() {
-    Celle[] celler = hentAlleCeller();
-    return Arrays.asList(celler)
-        .stream()
+    Celle[] celler = this.hentAlleCeller();
+    return Arrays.stream(celler)
         .filter(celle -> celle.erLevende())
         .toArray(Celle[]::new).length;
   }
 
   public void oppdater() {
-    Celle[] celler = hentAlleCeller();
+    Celle[] celler = this.hentAlleCeller();
     Arrays.asList(celler).forEach(celle -> celle.tellLevendeNaboer());
     Arrays.asList(celler).forEach(celle -> celle.oppdaterStatus());
+  }
+
+  public void kobleAlleCeller() {
+    for (int rad = 0; rad < antRader; rad++) {
+      for (int kolonne = 0; kolonne < antKolonner; kolonne++) {
+        this.settNaboer(rad, kolonne);
+      }
+    }
   }
 
   ///////////////////////////////////////////////////////////////////////////
@@ -137,14 +143,6 @@ public class Rutenett {
         .map(posisjon -> this.hentCelle(posisjon[0], posisjon[1]))
         .filter(celle -> celle != null)
         .toArray(Celle[]::new);
-  }
-
-  public void kobleAlleCeller() {
-    for (int rad = 0; rad < antRader; rad++) {
-      for (int kolonne = 0; kolonne < antKolonner; kolonne++) {
-        this.settNaboer(rad, kolonne);
-      }
-    }
   }
 
   private Celle[] hentAlleCeller() {

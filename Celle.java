@@ -46,8 +46,7 @@ public class Celle {
   }
 
   public void tellLevendeNaboer() {
-    this.antLevendeNaboer = (int) Arrays.asList(this.naboer)
-        .stream()
+    this.antLevendeNaboer = (int) Arrays.stream(this.naboer)
         .filter(celle -> celle != null && celle.levende)
         .count();
 
