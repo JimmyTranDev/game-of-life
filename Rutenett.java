@@ -57,7 +57,7 @@ public class Rutenett {
         .forEach(rad -> this.tegnRad(rad));
   }
 
-  private int[][] faAllePar(int[] a, int[] b) {
+  private int[][] hentAllePar(int[] a, int[] b) {
     int aLength = a.length;
     int bLength = b.length;
 
@@ -72,37 +72,77 @@ public class Rutenett {
     return result;
   }
 
-  private int[] faNaboRader(int rad) {
+  private int[] hentNaboRader(int rad) {
     return IntStream
         .range(rad - 1, rad + 2)
         .filter(r -> r >= 0 && r < antRader)
         .toArray();
   }
 
-  private int[] faNaboKolonner(int kolonne) {
+  private int[] hentNaboKolonner(int kolonne) {
     return IntStream
         .range(kolonne - 1, kolonne + 2)
         .filter(k -> k >= 0 && k < antKolonner)
         .toArray();
   }
 
-  private int[][] filtrerUtEgenPosisjon(int[][] par, int rad, int kolonne) {
+  private int[][] filtrerUtEgenPosisjon(int[][] posisjoner, int rad, int kolonne) {
     return Arrays
-        .stream(par)
-        .filter(p -> p[0] != rad || p[1] != kolonne)
+        .stream(posisjoner)
+        .filter(posisjon -> posisjon[0] != rad || posisjon[1] != kolonne)
         .toArray(int[][]::new);
   }
 
-  public int[][] faAlleNaboCellePosisjoner(int rad, int kolonne) {
-    int[] naboRad = faNaboRader(rad);
-    int[] naboKolonne = faNaboKolonner(kolonne);
-    int[][] naboOgEgenPosisjoner = this.faAllePar(naboRad, naboKolonne);
-    int[][] naboPosisjoner = filtrerUtEgenPosisjon(naboOgEgenPosisjoner, rad, kolonne);
+  private int[][] faAlleNaboCellePosisjoner(int rad, int kolonne) {
+    int[] naboRader = this.hentNaboRader(rad);
+    int[] naboKolonner = this.hentNaboKolonner(kolonne);
+    int[][] egenOgNaboPosisjoner = this.hentAllePar(naboRader, naboKolonner);
+    int[][] naboPosisjoner = this.filtrerUtEgenPosisjon(egenOgNaboPosisjoner, rad, kolonne);
 
     return naboPosisjoner;
   }
 
-  public void settNaboer(int rad, int kolonne) {
+  private Celle[] hentCeller(int[][] posisjoner) {
+    return Arrays
+        .stream(posisjoner)
+        .map(posisjon -> this.hentCelle(posisjon[0], posisjon[1]))
+        .filter(celle -> celle != null)
+        .toArray(Celle[]::new);
   }
 
+  public void settNaboer(int rad, int kolonne) {
+    Celle celle = this.hentCelle(rad, kolonne).orElse(null);
+
+    if (celle == null) {
+      return;
+    }
+
+    int[][] naboPosisjoner = this.faAlleNaboCellePosisjoner(rad, kolonne);
+    Celle[] naboer = this.hentCeller(naboPosisjoner);
+    Arrays.asList(naboer).forEach(celle::leggTilNabo);
+  }
+
+  public void kobleAlleCeller() {
+    for (int rad = 0; rad < antRader; rad++) {
+      for (int kolonne = 0; kolonne < antKolonner; kolonne++) {
+        this.settNaboer(rad, kolonne);
+      }
+    }
+  }
+
+  private Celle[] hentAlleCeller() {
+    return Arrays
+        .stream(rutene)
+        .flatMap(Arrays::stream)
+        .toArray(Celle[]::new);
+
+  }
+
+  public int antallLevende() {
+    Celle[] celler = hentAlleCeller();
+    return Arrays.asList(celler)
+        .stream()
+        .filter(celle -> celle.erLevende())
+        .toArray(Celle[]::new).length;
+  }
 }
