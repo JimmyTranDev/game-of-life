@@ -48,17 +48,16 @@ public class Celle {
         .count();
   }
 
-  private boolean erUnderpopulert() {
+  private boolean erUnderPopulert() {
     return this.antLevendeNaboer < 2;
   }
 
-  private boolean erOverbefolket() {
+  private boolean erOvererPopulert() {
     return this.antLevendeNaboer > 3;
   }
 
   public void oppdaterStatus() {
-    boolean burdeDoe = this.erUnderpopulert() || this.erOverbefolket();
-    if (burdeDoe) {
+    if (this.erUnderPopulert() || this.erOvererPopulert()) {
       this.settDoed();
       return;
     }
