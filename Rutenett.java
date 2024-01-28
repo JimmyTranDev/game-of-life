@@ -36,16 +36,16 @@ public class Rutenett {
         .forEach(rad -> this.fyllRadMedTilfeldigeCeller(rad));
   }
 
-  public Optional<Celle> hentCelle(int rad, int kolonne) {
+  public Celle hentCelle(int rad, int kolonne) {
     try {
-      return Optional.of(rutene[rad][kolonne]);
+      return rutene[rad][kolonne];
     } catch (ArrayIndexOutOfBoundsException e) {
       return null;
     }
   }
 
   public void settNaboer(int rad, int kolonne) {
-    Celle celle = this.hentCelle(rad, kolonne).orElse(null);
+    Celle celle = this.hentCelle(rad, kolonne);
 
     if (celle == null) {
       return;

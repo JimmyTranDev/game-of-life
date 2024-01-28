@@ -1,35 +1,31 @@
 import java.util.Arrays;
 
 public class Celle {
-  private String status;
-  private Celle[] naboer;
-  private int antNaboer;
-  private int antLevendeNaboer;
+  public boolean levende;
+  public Celle[] naboer;
+  public int antNaboer;
+  public int antLevendeNaboer;
 
   public Celle() {
-    this.status = "doed";
+    this.levende = false;
     this.naboer = new Celle[8];
     this.antNaboer = 0;
     this.antLevendeNaboer = 0;
   }
 
   public void settLevende() {
-    this.status = "levende";
+    this.levende = true;
   }
 
   public void settDoed() {
-    this.status = "doed";
-  }
-
-  public boolean erLevende() {
-    return this.status == "levende";
+    this.levende = false;
   }
 
   public char hentStatusTegn() {
     char levendeTegn = "O".toCharArray()[0];
     char doedTegn = ".".toCharArray()[0];
 
-    return this.erLevende() ? levendeTegn : doedTegn;
+    return this.levende ? levendeTegn : doedTegn;
   }
 
   public void leggTilNabo(Celle celle) {
@@ -44,7 +40,7 @@ public class Celle {
   public void tellLevendeNaboer() {
     this.antLevendeNaboer = (int) Arrays.asList(this.naboer)
         .stream()
-        .filter(celle -> celle.erLevende())
+        .filter(celle -> celle.levende)
         .count();
   }
 
