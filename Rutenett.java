@@ -3,9 +3,9 @@ import java.util.Optional;
 import java.util.stream.IntStream;
 
 public class Rutenett {
-  private Celle[][] rutene;
-  private int antRader;
-  private int antKolonner;
+  public Celle[][] rutene;
+  public int antRader;
+  public int antKolonner;
 
   Rutenett(int antRader, int antKolonner) {
     this.antRader = antRader;
@@ -83,6 +83,7 @@ public class Rutenett {
         .stream()
         .map(celle -> celle.hentStatusTegn())
         .forEach(tegn -> System.out.print(tegn));
+    System.out.println();
   }
 
   private int[][] hentAllePar(int[] a, int[] b) {

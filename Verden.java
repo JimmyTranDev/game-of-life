@@ -15,13 +15,13 @@ public class Verden {
   }
 
   public void tegn() {
-    System.out.println("Generasjon: " + this.genNr);
+    System.out.println("Generasjon: " + this.genNr + "");
     System.out.println("Antall levende celler: " + this.rutenett.antallLevende());
     this.rutenett.tegnRutenett();
   }
 
-  public void oppdater() {
+  public void oppdatering() {
     this.rutenett.oppdater();
-    this.genNr++;
+    this.genNr += 1;
   }
 }

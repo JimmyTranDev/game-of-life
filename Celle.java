@@ -21,6 +21,10 @@ public class Celle {
     this.levende = false;
   }
 
+  public boolean erLevende() {
+    return this.levende;
+  }
+
   public char hentStatusTegn() {
     char levendeTegn = "O".toCharArray()[0];
     char doedTegn = ".".toCharArray()[0];
@@ -33,31 +37,37 @@ public class Celle {
       throw new IllegalArgumentException("Celle har allerede 8 naboer");
     }
 
-    this.naboer[antLevendeNaboer] = celle;
-    this.antNaboer++;
+    this.naboer[antNaboer] = celle;
+    this.antNaboer += 1;
+
+    if (celle.erLevende()) {
+      this.antLevendeNaboer += 1;
+    }
   }
 
   public void tellLevendeNaboer() {
     this.antLevendeNaboer = (int) Arrays.asList(this.naboer)
         .stream()
-        .filter(celle -> celle.levende)
+        .filter(celle -> celle != null && celle.levende)
         .count();
-  }
 
-  private boolean erUnderPopulert() {
-    return this.antLevendeNaboer < 2;
-  }
-
-  private boolean erOvererPopulert() {
-    return this.antLevendeNaboer > 3;
   }
 
   public void oppdaterStatus() {
-    if (this.erUnderPopulert() || this.erOvererPopulert()) {
-      this.settDoed();
-      return;
+    if (this.levende && (this.antLevendeNaboer < 2 || this.antLevendeNaboer > 3)) {
+      this.levende = false;
+    } else if (!this.levende && this.antLevendeNaboer == 3) {
+      this.levende = true;
     }
 
-    this.settLevende();
+  }
+
+  @Override
+  public String toString() {
+    return String.format(
+        "Celle(levende=%s, antNaboer=%d, antLevendeNaboer=%d)",
+        this.levende,
+        this.antNaboer,
+        this.antLevendeNaboer);
   }
 }
